@@ -1,0 +1,13 @@
+fastapi[all]~=0.90.1
+fastapi-utils
+uvicorn~=0.20.0
+SQLAlchemy~=1.4.46
+sqlalchemy-utils
+mysql-connector-python
+mysqlclient
+pydantic[dotenv,email]~=1.10.4
+cryptography
+
+
+starlette~=0.23.1
+PyMySQL~=1.0.2
