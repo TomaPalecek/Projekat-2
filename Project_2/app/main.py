@@ -3,16 +3,20 @@ from fastapi import FastAPI
 from starlette.responses import RedirectResponse
 
 from app.db.database import engine, Base
-from app.users.routes import user_router, player_router
+from app.users.routes import user_router, player_router, admin_router, admin_type_router
 
 
 Base.metadata.create_all(bind=engine)
 
 
 def init_app():
+
     app = FastAPI()
     app.include_router(user_router)
     app.include_router(player_router)
+    app.include_router(admin_router)
+    app.include_router(admin_type_router)
+
     return app
 
 
