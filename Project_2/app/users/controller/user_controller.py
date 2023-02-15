@@ -1,17 +1,46 @@
-from app.users.services import UserServices
-from fastapi import HTTPException
+from fastapi import HTTPException, Response
 from sqlalchemy.exc import IntegrityError
+
+from app.users.exceptions import UserInvalidPassword
+from app.users.services import UserServices, signJWT
 
 
 class UserController:
-
     @staticmethod
     def create_user(email, password):
         try:
             user = UserServices.create_user(email, password)
             return user
         except IntegrityError as e:
-            raise HTTPException(status_code=400, detail=f"User with provided email - {email} already exists.")
+            raise HTTPException(
+                status_code=400,
+                detail=f"User with provided email - {email} already exists.",
+            )
+        except Exception as e:
+            raise HTTPException(status_code=500, detail=str(e))
+
+    @staticmethod
+    def create_super_user(email, password):
+        try:
+            user = UserServices.create_super_user(email, password)
+            return user
+        except IntegrityError as e:
+            raise HTTPException(
+                status_code=400,
+                detail=f"User with provided email - {email} already exists.",
+            )
+        except Exception as e:
+            raise HTTPException(status_code=500, detail=str(e))
+
+    @staticmethod
+    def login_user(email, password):
+        try:
+            user = UserServices.login_user(email, password)
+            if user.is_superuser:
+                return signJWT(user.id, "super_user")
+            return signJWT(user.id, "classic_user")
+        except UserInvalidPassword as e:
+            raise HTTPException(status_code=e.code, detail=e.message)
         except Exception as e:
             raise HTTPException(status_code=500, detail=str(e))
 
@@ -21,7 +50,10 @@ class UserController:
         if user:
             return user
         else:
-            raise HTTPException(status_code=400, detail=f"user with provided id {user_id} doesn't exist.")
+            raise HTTPException(
+                status_code=400,
+                detail=f"user with provided id {user_id} does not exist",
+            )
 
     @staticmethod
     def get_all_users():

@@ -1,16 +1,26 @@
-from sqlalchemy.orm import Session
-from app.users.models import User
 from sqlalchemy.exc import IntegrityError
+from sqlalchemy.orm import Session
+
+from app.users.models import User
 
 
 class UserRepository:
-
     def __init__(self, db: Session):
         self.db = db
 
     def create_user(self, email, password):
         try:
             user = User(email, password)
+            self.db.add(user)
+            self.db.commit()
+            self.db.refresh(user)
+            return user
+        except IntegrityError as e:
+            raise e
+
+    def create_super_user(self, email, password):
+        try:
+            user = User(email=email, password=password, is_superuser=True)
             self.db.add(user)
             self.db.commit()
             self.db.refresh(user)
@@ -45,3 +55,8 @@ class UserRepository:
             return user
         except Exception as e:
             raise e
+
+    def read_user_by_email(self, email: str):
+        user = self.db.query(User).filter(User.email == email).first()
+        return user
+    

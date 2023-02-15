@@ -1,13 +1,10 @@
-from pydantic.schema import Optional
-from sqlalchemy import Column, String, Boolean
 from uuid import uuid4
-
+from sqlalchemy import Boolean, Column, String
 from app.db.database import Base
 
 
 class User(Base):
     __tablename__ = "users"
-
     id = Column(String(50), primary_key=True, default=uuid4, autoincrement=False)
     email = Column(String(100), unique=True)
     password = Column(String(100))
