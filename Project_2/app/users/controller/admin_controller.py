@@ -23,8 +23,7 @@ class AdminController:
             return admin
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
-            detail=f"Admin with provided id {admin_id} does not exist",
-        )
+            detail=f"Admin with provided id {admin_id} does not exist")
 
     @staticmethod
     def get_admins_by_characters(characters: str):
@@ -33,8 +32,7 @@ class AdminController:
             return admins
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
-            detail=f"Admin with provided characters {characters} does not exist",
-        )
+            detail=f"Admin with provided characters {characters} does not exist")
 
     @staticmethod
     def get_admins_by_admin_type_id(admin_type_id: str):
@@ -43,8 +41,7 @@ class AdminController:
             return admins
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
-            detail=f"Admin with provided admin type id {admin_type_id} does not exist",
-        )
+            detail=f"Admin with provided admin type id {admin_type_id} does not exist")
 
     @staticmethod
     def get_all_admins():
