@@ -20,13 +20,22 @@ class QuizServices:
                 return quiz_repository.get_quiz_by_id(quiz_id)
         except Exception as e:
             raise e
-"""
+
     @staticmethod
-    def player1_results(player1, player1_answers, player1_time):
+    def get_all_quizzes():
         try:
             with SessionLocal() as db:
                 quiz_repository = QuizRepository(db)
-                return quiz_repository.create_quiz(player1, player2)
+                return quiz_repository.get_all_quizzes()
         except Exception as e:
             raise e
-"""
+
+    @staticmethod
+    def delete_quiz_by_id(quiz_id: str):
+        try:
+            with SessionLocal() as db:
+                quiz_repository = QuizRepository(db)
+                quiz_repository.delete_quiz_by_id(quiz_id)
+                return True
+        except Exception as e:
+            raise e

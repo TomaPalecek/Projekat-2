@@ -25,14 +25,17 @@ class QuizRepository:
             raise QuizNotFoundException(f"Quiz with provided ID: {quiz_id} not found.", 400)
         return quiz
 
-"""
-    def player1_results(self, player1, player1_answers, player1_time):
+    def get_all_quizzes(self):
+        quiz = self.db.query(Quiz).all()
+        return quiz
+
+    def delete_quiz_by_id(self, quiz_id: str):
         try:
-            quiz = Quiz(player1, player1_answers, player1_time)
-            self.db.add(quiz)
+            quiz = self.db.query(Quiz).filter(Quiz.id == quiz_id).first()
+            if quiz is None:
+                raise QuizNotFoundException(f"Quiz with provided ID: {quiz_id} not found.", 400)
+            self.db.delete(quiz)
             self.db.commit()
-            self.db.refresh(quiz)
-            return quiz
-        except IntegrityError as e:
+            return True
+        except Exception as e:
             raise e
-"""

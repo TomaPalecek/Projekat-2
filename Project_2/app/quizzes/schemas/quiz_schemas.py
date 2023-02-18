@@ -1,6 +1,6 @@
 
-
-from pydantic import UUID4, BaseModel
+from pydantic.schema import Optional
+from pydantic import UUID4, BaseModel, NonNegativeInt
 
 
 class QuizSchema(BaseModel):
@@ -9,8 +9,8 @@ class QuizSchema(BaseModel):
     player2: str
     player1_answers: str
     player2_answers: str
-    player1_time: int
-    player2_time: int
+    player1_time: NonNegativeInt
+    player2_time: NonNegativeInt
     status: str
     questions: str
     winner: str
@@ -22,7 +22,6 @@ class QuizSchema(BaseModel):
 class QuizSchemaIn1(BaseModel):
     player1: str
     player2: str
-
 
     class Config:
         orm_mode = True
