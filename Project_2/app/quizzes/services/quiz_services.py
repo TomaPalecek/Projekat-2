@@ -52,6 +52,18 @@ class QuizServices:
             raise e
 
     @staticmethod
+    def answer_challenge_request(
+            quiz_id: str,
+            player_decision: bool = None
+    ):
+        try:
+            with SessionLocal() as db:
+                quiz_repository = QuizRepository(db)
+                return quiz_repository.answer_challenge_request(quiz_id, player_decision)
+        except Exception as e:
+            raise e
+
+    @staticmethod
     def player_answers(
             quiz_id: str,
             player1_answers: str = None,

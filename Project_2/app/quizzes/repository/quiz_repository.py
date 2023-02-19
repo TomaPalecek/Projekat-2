@@ -11,15 +11,12 @@ from app.quizzes.models import Quiz
 # from app.questions.models import Question
 
 
-
 class QuizRepository:
     def __init__(self, db: Session):
         self.db = db
 
     def create_quiz(self, player1, player2):
         try:
-
-            quiz = Quiz(player1, player2)
 
             # questions = QuizRepository.generate_10_questions(self)
             quiz = Quiz(player1, player2)  # , questions=questions
@@ -55,6 +52,29 @@ class QuizRepository:
             self.db.delete(quiz)
             self.db.commit()
             return True
+        except Exception as e:
+            raise e
+
+    def answer_challenge_request(
+            self,
+            quiz_id: str,
+            player_decision: bool = None
+    ):
+        try:
+            quiz = self.db.query(Quiz).filter(Quiz.id == quiz_id).first()
+
+            if quiz is None:
+                raise QuizNotFoundException(f"Quiz with provided ID: {quiz_id} not found.", 400)
+            if player_decision is True:
+                quiz.status = "Accepted"
+            if player_decision is False:
+                quiz.status = "Declined"
+                quiz.winner = quiz.player1
+
+            self.db.add(quiz)
+            self.db.commit()
+            self.db.refresh(quiz)
+            return quiz
         except Exception as e:
             raise e
 

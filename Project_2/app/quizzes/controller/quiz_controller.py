@@ -50,6 +50,17 @@ class QuizController:
             raise HTTPException(status_code=400, detail=str(e))
 
     @staticmethod
+    def answer_challenge_request(
+            quiz_id: str,
+            player_decision: bool = None
+    ):
+        try:
+            quiz = QuizServices.answer_challenge_request(quiz_id, player_decision)
+            return quiz
+        except Exception as e:
+            raise HTTPException(status_code=500, detail=str(e))
+
+    @staticmethod
     def player_answers(
             quiz_id: str,
             player1_answers: str = None,

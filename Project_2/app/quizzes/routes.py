@@ -31,6 +31,14 @@ def delete_quiz_by_id(quiz_id: str):
     return QuizController.delete_quiz_by_id(quiz_id)
 
 
+@quiz_router.put("/update_challenge-request", response_model=QuizSchema)
+def answer_challenge_request(
+        quiz_id: str,
+        player_decision: bool = None
+):
+    return QuizController.answer_challenge_request(quiz_id, player_decision)
+
+
 @quiz_router.put("/update_answers-by-quiz-id", response_model=QuizSchema)
 def player_answers(
         quiz_id: str,
