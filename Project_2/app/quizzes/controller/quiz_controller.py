@@ -1,4 +1,6 @@
 from fastapi import HTTPException, Response, status
+from pydantic import NonNegativeInt
+
 from app.quizzes.exceptions import *
 from app.users.exceptions import *
 from app.quizzes.services import QuizServices
@@ -28,6 +30,11 @@ class QuizController:
             detail=f"Quiz with provided id {quiz_id} does not exist")
 
     @staticmethod
+    def get_players_challenges(player: str):
+        quiz = QuizServices.get_players_challenges(player)
+        return quiz
+
+    @staticmethod
     def get_all_quizzes():
         quiz = QuizServices.get_all_quizzes()
         return quiz
@@ -41,3 +48,18 @@ class QuizController:
             raise HTTPException(status_code=e.code, detail=e.message)
         except Exception as e:
             raise HTTPException(status_code=400, detail=str(e))
+
+    @staticmethod
+    def player_answers(
+            quiz_id: str,
+            player1_answers: str = None,
+            player2_answers: str = None,
+            player1_time: NonNegativeInt = None,
+            player2_time: NonNegativeInt = None
+    ):
+        try:
+            quiz = QuizServices.player_answers(quiz_id, player1_answers, player2_answers,
+                                               player1_time, player2_time)
+            return quiz
+        except Exception as e:
+            raise HTTPException(status_code=500, detail=str(e))

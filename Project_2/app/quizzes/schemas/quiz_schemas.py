@@ -19,7 +19,7 @@ class QuizSchema(BaseModel):
         orm_mode = True
 
 
-class QuizSchemaIn1(BaseModel):
+class QuizSchemaIn(BaseModel):
     player1: str
     player2: str
 
@@ -33,7 +33,6 @@ class QuizSchemaIn2(BaseModel):
     player1_answers: str
 
     player1_time: int
-
 
     class Config:
         orm_mode = True

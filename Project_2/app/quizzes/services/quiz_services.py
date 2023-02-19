@@ -1,3 +1,5 @@
+from pydantic import NonNegativeInt
+
 from app.db.database import SessionLocal
 from app.quizzes.repository.quiz_repository import QuizRepository
 
@@ -22,6 +24,15 @@ class QuizServices:
             raise e
 
     @staticmethod
+    def get_players_challenges(player: str):
+        try:
+            with SessionLocal() as db:
+                quiz_repository = QuizRepository(db)
+                return quiz_repository.get_players_challenges(player)
+        except Exception as e:
+            raise e
+
+    @staticmethod
     def get_all_quizzes():
         try:
             with SessionLocal() as db:
@@ -37,5 +48,21 @@ class QuizServices:
                 quiz_repository = QuizRepository(db)
                 quiz_repository.delete_quiz_by_id(quiz_id)
                 return True
+        except Exception as e:
+            raise e
+
+    @staticmethod
+    def player_answers(
+            quiz_id: str,
+            player1_answers: str = None,
+            player2_answers: str = None,
+            player1_time: NonNegativeInt = None,
+            player2_time: NonNegativeInt = None
+    ):
+        try:
+            with SessionLocal() as db:
+                quiz_repository = QuizRepository(db)
+                return quiz_repository.player_answers(quiz_id, player1_answers, player2_answers,
+                                                      player1_time, player2_time)
         except Exception as e:
             raise e

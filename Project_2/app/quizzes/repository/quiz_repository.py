@@ -1,8 +1,15 @@
+
+from pydantic import NonNegativeInt
+from sqlalchemy import func, and_, or_
+
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import Session
 
 from app.quizzes.exceptions import *
 from app.quizzes.models import Quiz
+
+# from app.questions.models import Question
+
 
 
 class QuizRepository:
@@ -11,19 +18,30 @@ class QuizRepository:
 
     def create_quiz(self, player1, player2):
         try:
+
             quiz = Quiz(player1, player2)
+
+            # questions = QuizRepository.generate_10_questions(self)
+            quiz = Quiz(player1, player2)  # , questions=questions
+
             self.db.add(quiz)
             self.db.commit()
             self.db.refresh(quiz)
             return quiz
         except IntegrityError as e:
             raise e
-        
+
     def get_quiz_by_id(self, quiz_id: str):
         quiz = self.db.query(Quiz).filter(Quiz.id == quiz_id).first()
         if quiz is None:
             raise QuizNotFoundException(f"Quiz with provided ID: {quiz_id} not found.", 400)
         return quiz
+
+    def get_players_challenges(self, player: str):
+        quizzes = self.db.query(Quiz).where(and_(or_(Quiz.player1 == player, Quiz.player2 == player),
+                                                 Quiz.status == "Pending")).all()
+
+        return quizzes
 
     def get_all_quizzes(self):
         quiz = self.db.query(Quiz).all()
@@ -39,3 +57,49 @@ class QuizRepository:
             return True
         except Exception as e:
             raise e
+
+    def player_answers(
+            self, 
+            quiz_id: str,
+            player1_answers: str = None, 
+            player2_answers: str = None, 
+            player1_time: NonNegativeInt = None, 
+            player2_time: NonNegativeInt = None
+    ):
+        try:
+            quiz = self.db.query(Quiz).filter(Quiz.id == quiz_id).first()
+            
+            if quiz is None:
+                raise QuizNotFoundException(f"Quiz with provided ID: {quiz_id} not found.", 400)
+            if player1_answers is not None:
+                quiz.player1_answers = player1_answers
+            if player2_answers is not None:
+                quiz.player2_answers = player2_answers
+            if player1_time is not None:
+                quiz.player1_time = player1_time
+            if player2_time is not None:
+                quiz.player2_time = player2_time
+                
+            self.db.add(quiz)
+            self.db.commit()
+            self.db.refresh(quiz)
+            return quiz
+        except Exception as e:
+            raise e
+
+
+"""
+            def generate_10_questions(self):
+
+                num_of_questions = self.db.query(Question).count()
+                print(f"STAMPA1: {num_of_questions}")
+                if num_of_questions < 10:
+                    raise ValueError("There are less than 10 questions in the database")
+
+                selected_questions_ids = self.db.query(Question).order_by(func.rand()).limit(10).all()
+                print(f"STAMPA2: {selected_questions_ids}")
+                questions_string = ','.join([q.id for q in selected_questions_ids])
+                print(f"STAMPA3: {questions_string}")
+
+                return questions_string
+"""
