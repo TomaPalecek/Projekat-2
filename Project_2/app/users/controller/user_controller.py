@@ -72,5 +72,6 @@ class UserController:
     def update_user_is_active(user_id: str, is_active: bool):
         try:
             user = UserServices.update_user_is_active(user_id, is_active)
+            return user
         except Exception as e:
             raise HTTPException(status_code=500, detail=str(e))

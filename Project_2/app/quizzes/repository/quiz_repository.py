@@ -30,8 +30,6 @@ class QuizRepository:
 
     def get_quiz_by_id(self, quiz_id: str):
         quiz = self.db.query(Quiz).filter(Quiz.id == quiz_id).first()
-        if quiz is None:
-            raise QuizNotFoundException(f"Quiz with provided ID: {quiz_id} not found.", 400)
         return quiz
 
     def get_players_challenges(self, player: str):
@@ -106,20 +104,3 @@ class QuizRepository:
             return quiz
         except Exception as e:
             raise e
-
-
-"""
-            def generate_10_questions(self):
-
-                num_of_questions = self.db.query(Question).count()
-                print(f"STAMPA1: {num_of_questions}")
-                if num_of_questions < 10:
-                    raise ValueError("There are less than 10 questions in the database")
-
-                selected_questions_ids = self.db.query(Question).order_by(func.rand()).limit(10).all()
-                print(f"STAMPA2: {selected_questions_ids}")
-                questions_string = ','.join([q.id for q in selected_questions_ids])
-                print(f"STAMPA3: {questions_string}")
-
-                return questions_string
-"""

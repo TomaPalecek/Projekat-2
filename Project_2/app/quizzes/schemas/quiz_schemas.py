@@ -1,5 +1,3 @@
-
-from pydantic.schema import Optional
 from pydantic import UUID4, BaseModel, NonNegativeInt
 
 
@@ -22,17 +20,6 @@ class QuizSchema(BaseModel):
 class QuizSchemaIn(BaseModel):
     player1: str
     player2: str
-
-    class Config:
-        orm_mode = True
-
-
-class QuizSchemaIn2(BaseModel):
-    player1: str
-
-    player1_answers: str
-
-    player1_time: int
 
     class Config:
         orm_mode = True

@@ -5,7 +5,7 @@ from starlette.responses import RedirectResponse
 from app.db.database import engine, Base
 from app.users.routes import user_router, player_router, admin_router, admin_type_router
 from app.questions.routes import category_router, question_router
-from app.quizzes.routes import quiz_router
+from app.quizzes.routes import quiz_router, q_and_a_router
 
 Base.metadata.create_all(bind=engine)
 
@@ -20,6 +20,7 @@ def init_app():
     app.include_router(category_router)
     app.include_router(question_router)
     app.include_router(quiz_router)
+    app.include_router(q_and_a_router)
 
     return app
 

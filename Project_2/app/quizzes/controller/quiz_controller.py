@@ -26,8 +26,9 @@ class QuizController:
         if quiz:
             return quiz
         raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST,
-            detail=f"Quiz with provided id {quiz_id} does not exist")
+            status_code=400,
+            detail=f"Quiz with provided id {quiz_id} does not exist",
+        )
 
     @staticmethod
     def get_players_challenges(player: str):

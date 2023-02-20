@@ -1,5 +1,5 @@
 from fastapi import APIRouter, Depends
-from app.quizzes.controller import QuizController
+from app.quizzes.controller import QuizController, QandAController
 from app.users.controller.user_auth_controller import JWTBearer
 from app.quizzes.schemas import *
 
@@ -49,3 +49,26 @@ def player_answers(
 ):
     return QuizController.player_answers(quiz_id, player1_answers, player2_answers,
                                          player1_time, player2_time)
+
+
+q_and_a_router = APIRouter(tags=["Q and A"], prefix="/api/q_and_a")
+
+
+@q_and_a_router.post("/generate-question-for-quiz", response_model=QandASchema)
+def generate_question_for_quiz(q_and_a: QandASchemaIn):
+    return QandAController.generate_question_for_quiz(q_and_a.quiz_id)
+
+
+@q_and_a_router.get("/id", response_model=QandASchema)
+def get_q_and_a_by_id(q_and_a_id: str):
+    return QandAController.get_q_and_a_by_id(q_and_a_id)
+
+
+@q_and_a_router.get("/get-all-q-and-as-by-quiz-id", response_model=list[QandASchema])
+def get_all_q_and_as_by_quiz_id(quiz_id: str):
+    return QandAController.get_all_q_and_as_by_quiz_id(quiz_id)
+
+
+@q_and_a_router.delete("/")
+def delete_q_and_a_by_id(q_and_a_id: str):
+    return QandAController.delete_q_and_a_by_id(q_and_a_id)
