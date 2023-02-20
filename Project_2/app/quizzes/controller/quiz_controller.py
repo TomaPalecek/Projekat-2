@@ -62,16 +62,13 @@ class QuizController:
             raise HTTPException(status_code=500, detail=str(e))
 
     @staticmethod
-    def player_answers(
+    def record_players_times(
             quiz_id: str,
-            player1_answers: str = None,
-            player2_answers: str = None,
             player1_time: NonNegativeInt = None,
             player2_time: NonNegativeInt = None
     ):
         try:
-            quiz = QuizServices.player_answers(quiz_id, player1_answers, player2_answers,
-                                               player1_time, player2_time)
+            quiz = QuizServices.record_players_times(quiz_id, player1_time, player2_time)
             return quiz
         except Exception as e:
             raise HTTPException(status_code=500, detail=str(e))

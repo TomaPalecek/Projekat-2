@@ -8,7 +8,6 @@ from sqlalchemy.orm import Session
 from app.quizzes.exceptions import *
 from app.quizzes.models import Quiz
 
-# from app.questions.models import Question
 
 
 class QuizRepository:
@@ -18,8 +17,7 @@ class QuizRepository:
     def create_quiz(self, player1, player2):
         try:
 
-            # questions = QuizRepository.generate_10_questions(self)
-            quiz = Quiz(player1, player2)  # , questions=questions
+            quiz = Quiz(player1, player2)
 
             self.db.add(quiz)
             self.db.commit()
@@ -76,11 +74,9 @@ class QuizRepository:
         except Exception as e:
             raise e
 
-    def player_answers(
+    def record_players_times(
             self, 
             quiz_id: str,
-            player1_answers: str = None, 
-            player2_answers: str = None, 
             player1_time: NonNegativeInt = None, 
             player2_time: NonNegativeInt = None
     ):
@@ -89,10 +85,6 @@ class QuizRepository:
             
             if quiz is None:
                 raise QuizNotFoundException(f"Quiz with provided ID: {quiz_id} not found.", 400)
-            if player1_answers is not None:
-                quiz.player1_answers = player1_answers
-            if player2_answers is not None:
-                quiz.player2_answers = player2_answers
             if player1_time is not None:
                 quiz.player1_time = player1_time
             if player2_time is not None:

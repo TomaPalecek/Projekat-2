@@ -68,26 +68,26 @@ class QandARepository:
         except Exception as e:
             raise e
 
-    def update_q_and_a(
-        self,
-        q_and_a_id: str,
-        name: str = None,
-        last_name: str = None,
-        q_and_a_type_id: str = None,
+    def players_answers(
+            self,
+            q_and_a_id: str,
+            player1_answer: str = None,
+            player2_answer: str = None
     ):
         try:
             q_and_a = self.db.query(QandA).filter(QandA.id == q_and_a_id).first()
+
             if q_and_a is None:
                 raise QandANotFoundException(f"Q and A with provided ID: {q_and_a_id} not found.", 400)
-            if name is not None:
-                q_and_a.name = name
-            if last_name is not None:
-                q_and_a.last_name = last_name
-            if q_and_a_type_id is not None:
-                q_and_a.q_and_a_type_id = q_and_a_type_id
+            if player1_answer is not None:
+                q_and_a.player1_answer = player1_answer
+            if player2_answer is not None:
+                q_and_a.player2_answer = player2_answer
+
             self.db.add(q_and_a)
             self.db.commit()
             self.db.refresh(q_and_a)
             return q_and_a
         except Exception as e:
             raise e
+

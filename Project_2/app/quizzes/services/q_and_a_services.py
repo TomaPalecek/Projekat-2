@@ -40,3 +40,16 @@ class QandAServices:
                 return True
         except Exception as e:
             raise e
+
+    @staticmethod
+    def players_answers(
+            q_and_a_id: str,
+            player1_answer: str = None,
+            player2_answer: str = None
+    ):
+        try:
+            with SessionLocal() as db:
+                q_and_a_repository = QandARepository(db)
+                return q_and_a_repository.players_answers(q_and_a_id, player1_answer, player2_answer)
+        except Exception as e:
+            raise e

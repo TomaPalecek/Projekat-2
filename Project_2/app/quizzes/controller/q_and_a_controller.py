@@ -44,3 +44,15 @@ class QandAController:
             raise HTTPException(status_code=e.code, detail=e.message)
         except Exception as e:
             raise HTTPException(status_code=400, detail=str(e))
+
+    @staticmethod
+    def players_answers(
+            q_and_a_id: str,
+            player1_answer: str = None,
+            player2_answer: str = None
+    ):
+        try:
+            q_and_a = QandAServices.players_answers(q_and_a_id, player1_answer, player2_answer)
+            return q_and_a
+        except Exception as e:
+            raise HTTPException(status_code=500, detail=str(e))

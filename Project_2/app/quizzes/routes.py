@@ -39,16 +39,13 @@ def answer_challenge_request(
     return QuizController.answer_challenge_request(quiz_id, player_decision)
 
 
-@quiz_router.put("/update_answers-by-quiz-id", response_model=QuizSchema)
-def player_answers(
+@quiz_router.put("/record-times-by-quiz-id", response_model=QuizSchema)
+def record_players_times(
         quiz_id: str,
-        player1_answers: str = None,
-        player2_answers: str = None,
         player1_time: NonNegativeInt = None,
         player2_time: NonNegativeInt = None
 ):
-    return QuizController.player_answers(quiz_id, player1_answers, player2_answers,
-                                         player1_time, player2_time)
+    return QuizController.record_players_times(quiz_id, player1_time, player2_time)
 
 
 q_and_a_router = APIRouter(tags=["Q and A"], prefix="/api/q_and_a")
@@ -72,3 +69,12 @@ def get_all_q_and_as_by_quiz_id(quiz_id: str):
 @q_and_a_router.delete("/")
 def delete_q_and_a_by_id(q_and_a_id: str):
     return QandAController.delete_q_and_a_by_id(q_and_a_id)
+
+
+@q_and_a_router.put("/update-answers-by-q-and-a-id", response_model=QandASchema)
+def players_answers(
+            q_and_a_id: str,
+            player1_answer: str = None,
+            player2_answer: str = None
+):
+    return QandAController.players_answers(q_and_a_id, player1_answer, player2_answer)
