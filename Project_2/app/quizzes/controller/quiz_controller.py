@@ -1,4 +1,4 @@
-from fastapi import HTTPException, Response, status
+from fastapi import HTTPException, Response
 from pydantic import NonNegativeInt
 
 from app.quizzes.exceptions import *
@@ -81,6 +81,17 @@ class QuizController:
         try:
             q_and_as = QandAServices.get_all_q_and_as_by_quiz_id(quiz_id)
             quiz = QuizServices.calculate_player_score(quiz_id, player_username, q_and_as)
+            return quiz
+        except Exception as e:
+            raise HTTPException(status_code=500, detail=str(e))
+
+    @staticmethod
+    def declare_winner(
+            quiz_id: str
+    ):
+        try:
+            q_and_as = QandAServices.get_all_q_and_as_by_quiz_id(quiz_id)
+            quiz = QuizServices.declare_winner(quiz_id, q_and_as)
             return quiz
         except Exception as e:
             raise HTTPException(status_code=500, detail=str(e))

@@ -88,3 +88,15 @@ class QuizServices:
                 return quiz_repository.calculate_player_score(quiz_id, player_username, q_and_as)
         except Exception as e:
             raise e
+
+    @staticmethod
+    def declare_winner(
+            quiz_id: str,
+            q_and_as: list
+    ):
+        try:
+            with SessionLocal() as db:
+                quiz_repository = QuizRepository(db)
+                return quiz_repository.declare_winner(quiz_id, q_and_as)
+        except Exception as e:
+            raise e

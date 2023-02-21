@@ -1,6 +1,6 @@
 
 from pydantic import NonNegativeInt
-from sqlalchemy import and_, or_
+from sqlalchemy import and_
 
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import Session
@@ -116,10 +116,6 @@ class QuizRepository:
                     if q.player1_answer == question.correct_answer:
                         score += 1
                 quiz.player1_score = score
-                self.db.add(quiz)
-                self.db.commit()
-                self.db.refresh(quiz)
-                return quiz
 
             elif quiz.player2 == player_username:
                 for q in q_and_as:
@@ -127,12 +123,59 @@ class QuizRepository:
                     if q.player2_answer == question.correct_answer:
                         score += 1
                 quiz.player2_score = score
-                self.db.add(quiz)
-                self.db.commit()
-                self.db.refresh(quiz)
-                return quiz
             else:
                 raise PlayerNotFoundException(f"Player with provided username {player_username} does not exist.", 400)
+
+            self.db.add(quiz)
+            self.db.commit()
+            self.db.refresh(quiz)
+            return quiz
+
+        except Exception as e:
+            raise e
+
+    def declare_winner(
+            self,
+            quiz_id: str,
+            q_and_as: list
+    ):
+        try:
+            quiz = self.db.query(Quiz).filter(Quiz.id == quiz_id).first()
+            if quiz is None:
+                raise QuizNotFoundException(f"Quiz with provided ID: {quiz_id} not found.", 400)
+
+            if len(q_and_as) != 10:
+                raise QuizHasntTenQuestionsException(f"Quiz with provided id {quiz_id} is doesn't have 10 questions."
+                                                     , 400)
+
+            for q in q_and_as:
+                if q.player1_answer == "" or q.player2_answer == "":
+                    raise QuizNotFinishedException(f"Quiz with provided id {quiz_id} is not finished.", 400)
+
+            self.calculate_player_score(quiz_id, quiz.player1, q_and_as)
+            self.calculate_player_score(quiz_id, quiz.player2, q_and_as)
+
+            if quiz.player1_score > quiz.player2_score:
+                quiz.winner = quiz.player1
+
+            elif quiz.player1_score < quiz.player2_score:
+                quiz.winner = quiz.player2
+
+            elif quiz.player1_score == quiz.player2_score:
+
+                if quiz.player1_time > quiz.player2_time:
+                    quiz.winner = quiz.player1
+
+                elif quiz.player1_time < quiz.player2_time:
+                    quiz.winner = quiz.player2
+
+                else:
+                    quiz.winner = "Draw"
+
+            self.db.add(quiz)
+            self.db.commit()
+            self.db.refresh(quiz)
+            return quiz
 
         except Exception as e:
             raise e

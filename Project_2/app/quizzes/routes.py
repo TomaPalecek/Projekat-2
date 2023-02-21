@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter
 from app.quizzes.controller import QuizController, QandAController
 from app.users.controller.user_auth_controller import JWTBearer
 from app.quizzes.schemas import *
@@ -56,6 +56,13 @@ def calculate_player_score(
     return QuizController.calculate_player_score(quiz_id, player_username)
 
 
+@quiz_router.put("/declare-winner", response_model=QuizSchema)
+def declare_winner(
+        quiz_id: str
+):
+    return QuizController.declare_winner(quiz_id)
+
+
 q_and_a_router = APIRouter(tags=["Q and A"], prefix="/api/q_and_a")
 
 
@@ -86,4 +93,3 @@ def players_answers(
             player2_answer: str = None
 ):
     return QandAController.players_answers(q_and_a_id, player1_answer, player2_answer)
-

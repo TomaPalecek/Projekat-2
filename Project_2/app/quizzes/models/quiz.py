@@ -15,7 +15,8 @@ class Quiz(Base):
     winner = Column(String(100))
     status = Column(String(100), default="Pending")
 
-    def __init__(self, player1, player2, player1_time=0, player2_time=0, player1_score=None, player2_score=None, winner="", status="Pending"):
+    def __init__(self, player1, player2, player1_time=0, player2_time=0, player1_score=None, player2_score=None,
+                 winner="", status="Pending"):
         self.player1 = player1
         self.player2 = player2
         self.player1_time = player1_time
