@@ -13,7 +13,7 @@ def create_user(user: UserSchemaIn):
     return UserController.create_user(user.email, user.password)
 
 
-@user_router.post("/add-new-super-user", response_model=UserSchema) # t
+@user_router.post("/add-new-super-user", response_model=UserSchema)  # t
 def create_super_user(user: UserSchemaIn):
     return UserController.create_super_user(user.email, user.password)
 
@@ -55,7 +55,34 @@ def create_player(player: PlayerSchemaIn):
 def get_player_by_id(player_id: str):
     return PlayerController.get_player_by_id(player_id=player_id)
 
-# ima smisla da ima i update username kao opcija
+
+@player_router.get("/get-player-by-username", response_model=PlayerSchema)  # t
+def get_player_by_username(username: str):
+    return PlayerController.get_player_by_username(username=username)
+
+
+@player_router.get("/get-all-players", response_model=list[PlayerSchema])
+def get_all_players():
+    return PlayerController.get_all_players()
+
+
+@player_router.delete("/")  # t
+def delete_player_by_id(player_id: str):
+    return PlayerController.delete_player_by_id(player_id)
+
+
+@player_router.put("/update-player-by-id", response_model=PlayerSchema)   # t
+def update_player(
+        player_id: str,
+        username: str = None,
+        played_quizzes: str = None,
+        questions_taken: str = None,
+        correct_answers: str = None,
+        incorrect_answers: str = None,
+        win_rate: str = None
+):
+    return PlayerController.update_player(player_id, username, played_quizzes, questions_taken,
+                                          correct_answers, incorrect_answers, win_rate)
 
 
 admin_router = APIRouter(tags=["Admin"], prefix="/api/admins")

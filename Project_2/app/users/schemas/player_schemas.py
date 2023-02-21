@@ -9,6 +9,11 @@ class PlayerSchema(BaseModel):
     username: str
     user_id: str
     user: UserSchema
+    played_quizzes: int
+    questions_taken: int
+    correct_answers: int
+    incorrect_answers: int
+    win_rate: float
 
     class Config:
         orm_mode = True

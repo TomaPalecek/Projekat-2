@@ -10,6 +10,7 @@ from app.quizzes.models import Quiz
 
 from app.questions.services import QuestionServices
 from app.users.exceptions import *
+from app.users.services import PlayerServices
 
 
 class QuizRepository:
@@ -145,8 +146,7 @@ class QuizRepository:
                 raise QuizNotFoundException(f"Quiz with provided ID: {quiz_id} not found.", 400)
 
             if len(q_and_as) != 10:
-                raise QuizHasntTenQuestionsException(f"Quiz with provided id {quiz_id} is doesn't have 10 questions."
-                                                     , 400)
+                raise QuizHasntTenQuestionsException(f"Quiz with provided id {quiz_id} doesn't have 10 questions.", 400)
 
             for q in q_and_as:
                 if q.player1_answer == "" or q.player2_answer == "":
@@ -154,6 +154,27 @@ class QuizRepository:
 
             self.calculate_player_score(quiz_id, quiz.player1, q_and_as)
             self.calculate_player_score(quiz_id, quiz.player2, q_and_as)
+
+            player_updater1 = PlayerServices.get_player_by_username(quiz.player1)
+            player_updater2 = PlayerServices.get_player_by_username(quiz.player2)
+
+            player_updater1.played_quizzes += 1
+            player_updater2.played_quizzes += 1
+            player_updater1.questions_taken += 10
+            player_updater2.questions_taken += 10
+            player_updater1.correct_answers += quiz.player1_score
+            player_updater2.correct_answers += quiz.player2_score
+            player_updater1.incorrect_answers += (10 - quiz.player1_score)
+            player_updater2.incorrect_answers += (10 - quiz.player2_score)
+
+            PlayerServices.update_player(player_updater1.id, played_quizzes=player_updater1.played_quizzes,
+                                         questions_taken=player_updater1.questions_taken,
+                                         correct_answers=player_updater1.correct_answers,
+                                         incorrect_answers=player_updater1.incorrect_answers)
+            PlayerServices.update_player(player_updater2.id, played_quizzes=player_updater2.played_quizzes,
+                                         questions_taken=player_updater2.questions_taken,
+                                         correct_answers=player_updater2.correct_answers,
+                                         incorrect_answers=player_updater2.incorrect_answers)
 
             if quiz.player1_score > quiz.player2_score:
                 quiz.winner = quiz.player1
