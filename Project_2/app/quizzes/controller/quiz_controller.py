@@ -3,7 +3,7 @@ from pydantic import NonNegativeInt
 
 from app.quizzes.exceptions import *
 from app.users.exceptions import *
-from app.quizzes.services import QuizServices
+from app.quizzes.services import QuizServices, QandAServices
 from app.users.services import PlayerServices
 
 
@@ -69,6 +69,18 @@ class QuizController:
     ):
         try:
             quiz = QuizServices.record_players_times(quiz_id, player1_time, player2_time)
+            return quiz
+        except Exception as e:
+            raise HTTPException(status_code=500, detail=str(e))
+
+    @staticmethod
+    def calculate_player_score(
+            quiz_id: str,
+            player_username: str
+    ):
+        try:
+            q_and_as = QandAServices.get_all_q_and_as_by_quiz_id(quiz_id)
+            quiz = QuizServices.calculate_player_score(quiz_id, player_username, q_and_as)
             return quiz
         except Exception as e:
             raise HTTPException(status_code=500, detail=str(e))

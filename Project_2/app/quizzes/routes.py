@@ -48,6 +48,14 @@ def record_players_times(
     return QuizController.record_players_times(quiz_id, player1_time, player2_time)
 
 
+@quiz_router.put("/calculate-player-score", response_model=QuizSchema)
+def calculate_player_score(
+        quiz_id: str,
+        player_username: str
+):
+    return QuizController.calculate_player_score(quiz_id, player_username)
+
+
 q_and_a_router = APIRouter(tags=["Q and A"], prefix="/api/q_and_a")
 
 
@@ -78,3 +86,4 @@ def players_answers(
             player2_answer: str = None
 ):
     return QandAController.players_answers(q_and_a_id, player1_answer, player2_answer)
+

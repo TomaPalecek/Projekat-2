@@ -1,6 +1,6 @@
 
 from pydantic import NonNegativeInt
-from sqlalchemy import func, and_, or_
+from sqlalchemy import and_, or_
 
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import Session
@@ -8,6 +8,8 @@ from sqlalchemy.orm import Session
 from app.quizzes.exceptions import *
 from app.quizzes.models import Quiz
 
+from app.questions.services import QuestionServices
+from app.users.exceptions import *
 
 
 class QuizRepository:
@@ -31,8 +33,7 @@ class QuizRepository:
         return quiz
 
     def get_players_challenges(self, player: str):
-        quizzes = self.db.query(Quiz).where(and_(or_(Quiz.player1 == player, Quiz.player2 == player),
-                                                 Quiz.status == "Pending")).all()
+        quizzes = self.db.query(Quiz).where(and_(Quiz.player2 == player, Quiz.status == "Pending")).all()
 
         return quizzes
 
@@ -94,5 +95,44 @@ class QuizRepository:
             self.db.commit()
             self.db.refresh(quiz)
             return quiz
+        except Exception as e:
+            raise e
+
+    def calculate_player_score(
+            self,
+            quiz_id: str,
+            player_username: str,
+            q_and_as: list
+    ):
+        try:
+            quiz = self.db.query(Quiz).filter(Quiz.id == quiz_id).first()
+            if quiz is None:
+                raise QuizNotFoundException(f"Quiz with provided ID: {quiz_id} not found.", 400)
+
+            score = 0
+            if quiz.player1 == player_username:
+                for q in q_and_as:
+                    question = QuestionServices.get_question_by_id(q.question_id)
+                    if q.player1_answer == question.correct_answer:
+                        score += 1
+                quiz.player1_score = score
+                self.db.add(quiz)
+                self.db.commit()
+                self.db.refresh(quiz)
+                return quiz
+
+            elif quiz.player2 == player_username:
+                for q in q_and_as:
+                    question = QuestionServices.get_question_by_id(q.question_id)
+                    if q.player2_answer == question.correct_answer:
+                        score += 1
+                quiz.player2_score = score
+                self.db.add(quiz)
+                self.db.commit()
+                self.db.refresh(quiz)
+                return quiz
+            else:
+                raise PlayerNotFoundException(f"Player with provided username {player_username} does not exist.", 400)
+
         except Exception as e:
             raise e

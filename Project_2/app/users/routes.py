@@ -2,7 +2,8 @@ from fastapi import APIRouter, Depends
 from app.users.controller import UserController, PlayerController, AdminController, AdminTypeController
 from app.users.controller.user_auth_controller import JWTBearer
 from app.users.schemas import *
-
+#
+# , dependencies=[Depends(JWTBearer("super_user"))]
 
 user_router = APIRouter(tags=["User"], prefix="/api/users")
 
@@ -12,7 +13,7 @@ def create_user(user: UserSchemaIn):
     return UserController.create_user(user.email, user.password)
 
 
-@user_router.post("/add-new-super-user", response_model=UserSchema, dependencies=[Depends(JWTBearer("super_user"))])
+@user_router.post("/add-new-super-user", response_model=UserSchema) # t
 def create_super_user(user: UserSchemaIn):
     return UserController.create_super_user(user.email, user.password)
 
@@ -27,7 +28,7 @@ def get_user_by_id(user_id: str):
     return UserController.get_user_by_id(user_id)
 
 
-@user_router.get("/get-all-users", response_model=list[UserSchema], dependencies=[Depends(JWTBearer("super_user"))])
+@user_router.get("/get-all-users", response_model=list[UserSchema])  # t
 def get_all_users():
     return UserController.get_all_users()
 
@@ -45,12 +46,12 @@ def update_user(user_id: str, is_active: bool):
 player_router = APIRouter(tags=["Player"], prefix="/api/players")
 
 
-@player_router.post("/add-new-player", response_model=PlayerSchema, dependencies=[Depends(JWTBearer("super_user"))])
+@player_router.post("/add-new-player", response_model=PlayerSchema)  # t
 def create_player(player: PlayerSchemaIn):
     return PlayerController.create_player(username=player.username, user_id=player.user_id)
 
 
-@player_router.get("/get-player-by-id", response_model=PlayerSchema, dependencies=[Depends(JWTBearer("super_user"))])
+@player_router.get("/get-player-by-id", response_model=PlayerSchema)  # t
 def get_player_by_id(player_id: str):
     return PlayerController.get_player_by_id(player_id=player_id)
 
@@ -60,7 +61,7 @@ def get_player_by_id(player_id: str):
 admin_router = APIRouter(tags=["Admin"], prefix="/api/admins")
 
 
-@admin_router.post("/add-new-admin", response_model=AdminSchema, dependencies=[Depends(JWTBearer("super_user"))])
+@admin_router.post("/add-new-admin", response_model=AdminSchema)  # t
 def create_admin(admin: AdminSchemaIn):
     return AdminController.create_admin(admin.name, admin.last_name, admin.admin_type_id)
 
@@ -85,7 +86,7 @@ def delete_admin_by_id(admin_id: str):
     return AdminController.delete_admin_by_id(admin_id)
 
 
-@admin_router.put("/update-admin-by-id", response_model=AdminSchema, dependencies=[Depends(JWTBearer("super_user"))])
+@admin_router.put("/update-admin-by-id", response_model=AdminSchema)   # t
 def update_admin(
     admin_id: str,
     name: str = None,
@@ -104,13 +105,12 @@ def create_admin_type(admin_type: AdminTypeSchemaIn):
     return AdminTypeController.create_admin_type(admin_type.admin_type)
 
 
-@admin_type_router.get("/id", response_model=AdminTypeSchema, dependencies=[Depends(JWTBearer("super_user"))])
+@admin_type_router.get("/id", response_model=AdminTypeSchema)   # t
 def get_admin_type_by_id(admin_type_id: str):
     return AdminTypeController.get_admin_type_by_id(admin_type_id)
 
 
-@admin_type_router.get("/get-all-admin-types", response_model=list[AdminTypeSchema],
-                       dependencies=[Depends(JWTBearer("super_user"))])
+@admin_type_router.get("/get-all-admin-types", response_model=list[AdminTypeSchema])   # t
 def get_all_admin_types():
     return AdminTypeController.get_all_admin_types()
 
@@ -120,6 +120,6 @@ def delete_admin_type_by_id(admin_type_id: str):
     return AdminTypeController.delete_admin_type_by_id(admin_type_id)
 
 
-@admin_type_router.put("/update", response_model=AdminTypeSchema, dependencies=[Depends(JWTBearer("super_user"))])
+@admin_type_router.put("/update", response_model=AdminTypeSchema)   # t
 def update_admin_type(admin_type_id, admin_type):
     return AdminTypeController.update_admin_type(admin_type_id, admin_type)

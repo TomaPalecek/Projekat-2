@@ -75,3 +75,16 @@ class QuizServices:
                 return quiz_repository.record_players_times(quiz_id, player1_time, player2_time)
         except Exception as e:
             raise e
+
+    @staticmethod
+    def calculate_player_score(
+            quiz_id: str,
+            player_username: str,
+            q_and_as: list
+    ):
+        try:
+            with SessionLocal() as db:
+                quiz_repository = QuizRepository(db)
+                return quiz_repository.calculate_player_score(quiz_id, player_username, q_and_as)
+        except Exception as e:
+            raise e
