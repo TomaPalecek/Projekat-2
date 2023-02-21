@@ -9,9 +9,9 @@ class AdminTypeRepository:
     def __init__(self, db: Session):
         self.db = db
 
-    def create_admin_type(self, admin_type):
+    def create_admin_type(self, admin_type, role, seniority):
         try:
-            admin_type = AdminType(admin_type)
+            admin_type = AdminType(admin_type, role, seniority)
             self.db.add(admin_type)
             self.db.commit()
             self.db.refresh(admin_type)
@@ -47,15 +47,23 @@ class AdminTypeRepository:
         except Exception as e:
             raise e
 
-    def update_admin_type(self, admin_type_id: str, admin_type: str):
+    def update_admin_type(self, admin_type_id: str = None, admin_type: str = None, role: str = None,
+                          seniority: str = None):
         try:
             a_type = self.db.query(AdminType).filter(AdminType.id == admin_type_id).first()
             if a_type is None:
                 raise AdminTypeNotFoundException(
-                    f"Admin type with provided ID: {admin_type_id} not found.",
-                    400,
-                )
-            a_type.admin_type = admin_type
+                    f"Admin type with provided ID: {admin_type_id} not found.", 400,)
+
+            if admin_type is not None:
+                a_type.admin_type = admin_type
+
+            if role is not None:
+                a_type.role = role
+
+            if seniority is not None:
+                a_type.seniority = seniority
+
             self.db.add(a_type)
             self.db.commit()
             self.db.refresh(a_type)

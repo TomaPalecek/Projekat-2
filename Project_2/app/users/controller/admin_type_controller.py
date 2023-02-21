@@ -6,9 +6,9 @@ from app.users.services import AdminTypeServices
 
 class AdminTypeController:
     @staticmethod
-    def create_admin_type(admin_type):
+    def create_admin_type(admin_type, role, seniority):
         try:
-            a_type = AdminTypeServices.create_admin_type(admin_type)
+            a_type = AdminTypeServices.create_admin_type(admin_type, role, seniority)
             return a_type
 
         except AdminTypeExistsException as e:
@@ -54,9 +54,9 @@ class AdminTypeController:
             raise HTTPException(status_code=400, detail=str(e))
 
     @staticmethod
-    def update_admin_type(admin_type_id: str, admin_type: str):
+    def update_admin_type(admin_type_id: str, admin_type: str, role: str, seniority: str):
         try:
-            a_type = AdminTypeServices.update_admin_type(admin_type_id, admin_type)
+            a_type = AdminTypeServices.update_admin_type(admin_type_id, admin_type, role, seniority)
             return a_type
         except AdminTypeNotFoundException as e:
             raise HTTPException(status_code=e.code, detail=e.message)
