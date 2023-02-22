@@ -12,13 +12,12 @@ def create_category(category: CategorySchemaIn):
     return CategoryController.create_category(category.category)
 
 
-@category_router.get("/id", response_model=CategorySchema, dependencies=[Depends(JWTBearer("super_user"))])
+@category_router.get("/id", response_model=CategorySchema)
 def get_category_by_id(category_id: str):
     return CategoryController.get_category_by_id(category_id)
 
 
-@category_router.get("/get-all-categories", response_model=list[CategorySchema],
-                     dependencies=[Depends(JWTBearer("super_user"))])
+@category_router.get("/get-all-categories", response_model=list[CategorySchema])
 def get_all_categories():
     return CategoryController.get_all_categories()
 
@@ -43,7 +42,7 @@ def create_question(question: QuestionSchemaIn):
                                               question.answer_d, question.correct_answer, question.category_id)
 
 
-@question_router.get("/id", response_model=QuestionSchema)
+@question_router.get("/id", response_model=QuestionSchema, dependencies=[Depends(JWTBearer("super_user"))])
 def get_question_by_id(question_id: str):
     return QuestionController.get_question_by_id(question_id)
 

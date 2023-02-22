@@ -1,4 +1,4 @@
-from fastapi import APIRouter
+from fastapi import APIRouter, Depends
 from app.quizzes.controller import QuizController, QandAController
 from app.users.controller.user_auth_controller import JWTBearer
 from app.quizzes.schemas import *
@@ -26,7 +26,7 @@ def get_all_quizzes():
     return QuizController.get_all_quizzes()
 
 
-@quiz_router.delete("/")
+@quiz_router.delete("/", dependencies=[Depends(JWTBearer("super_user"))])
 def delete_quiz_by_id(quiz_id: str):
     return QuizController.delete_quiz_by_id(quiz_id)
 
@@ -81,7 +81,7 @@ def get_all_q_and_as_by_quiz_id(quiz_id: str):
     return QandAController.get_all_q_and_as_by_quiz_id(quiz_id)
 
 
-@q_and_a_router.delete("/")
+@q_and_a_router.delete("/", dependencies=[Depends(JWTBearer("super_user"))])
 def delete_q_and_a_by_id(q_and_a_id: str):
     return QandAController.delete_q_and_a_by_id(q_and_a_id)
 
