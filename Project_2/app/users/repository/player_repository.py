@@ -23,10 +23,14 @@ class PlayerRepository:
 
     def get_player_by_id(self, player_id: str):
         player = self.db.query(Player).filter(Player.id == player_id).first()
+        if player is None:
+            raise PlayerNotFoundException(f"Player with provided ID: {player_id} not found.", 400)
         return player
 
     def get_player_by_username(self, username: str):
         player = self.db.query(Player).filter(Player.username == username).first()
+        if player is None:
+            raise PlayerNotFoundException(f"Player with provided ID: {username} not found.", 400)
         return player
 
     def get_all_players(self):
@@ -51,8 +55,7 @@ class PlayerRepository:
         played_quizzes: str = None,
         questions_taken: str = None,
         correct_answers: str = None,
-        incorrect_answers: str = None,
-        win_rate: str = None
+        incorrect_answers: str = None
     ):
         try:
             player = self.db.query(Player).filter(Player.id == player_id).first()
@@ -69,8 +72,6 @@ class PlayerRepository:
                 player.correct_answers = correct_answers
             if incorrect_answers is not None:
                 player.incorrect_answers = incorrect_answers
-            if win_rate is not None:
-                player.win_rate = win_rate
 
             self.db.add(player)
             self.db.commit()

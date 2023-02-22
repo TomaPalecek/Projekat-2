@@ -13,7 +13,6 @@ class PlayerSchema(BaseModel):
     questions_taken: int
     correct_answers: int
     incorrect_answers: int
-    win_rate: float
 
     class Config:
         orm_mode = True

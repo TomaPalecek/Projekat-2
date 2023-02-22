@@ -1,6 +1,6 @@
+from sqlalchemy.exc import IntegrityError
 from app.users.services import PlayerServices
 from fastapi import HTTPException, Response
-from sqlalchemy.exc import IntegrityError
 from app.users.exceptions import *
 
 
@@ -11,8 +11,10 @@ class PlayerController:
         try:
             player = PlayerServices.create_player(username, user_id)
             return player
+        except PlayerExistsException as e:
+            raise HTTPException(status_code=e.code, detail=e.message)
         except IntegrityError as e:
-            raise HTTPException(status_code=400, detail=f"Player with provided username - {username} already exists.")
+            raise HTTPException(status_code=400, detail=f"Provided User ID {user_id} does not exist.")
         except Exception as e:
             raise HTTPException(status_code=500, detail=str(e))
 
@@ -56,12 +58,13 @@ class PlayerController:
         played_quizzes: str = None,
         questions_taken: str = None,
         correct_answers: str = None,
-        incorrect_answers: str = None,
-        win_rate: str = None
+        incorrect_answers: str = None
     ):
         try:
             player = PlayerServices.update_player(player_id, username, played_quizzes, questions_taken,
-                                                  correct_answers, incorrect_answers, win_rate)
+                                                  correct_answers, incorrect_answers)
             return player
+        except PlayerNotFoundException as e:
+            raise HTTPException(status_code=e.code, detail=e.message)
         except Exception as e:
             raise HTTPException(status_code=500, detail=str(e))

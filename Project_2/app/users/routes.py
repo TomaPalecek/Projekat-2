@@ -78,11 +78,10 @@ def update_player(
         played_quizzes: str = None,
         questions_taken: str = None,
         correct_answers: str = None,
-        incorrect_answers: str = None,
-        win_rate: str = None
+        incorrect_answers: str = None
 ):
     return PlayerController.update_player(player_id, username, played_quizzes, questions_taken,
-                                          correct_answers, incorrect_answers, win_rate)
+                                          correct_answers, incorrect_answers)
 
 
 admin_router = APIRouter(tags=["Admin"], prefix="/api/admins")
