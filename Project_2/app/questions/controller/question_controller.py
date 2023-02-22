@@ -19,13 +19,14 @@ class QuestionController:
 
     @staticmethod
     def get_question_by_id(question_id: str):
-        question = QuestionServices.get_question_by_id(question_id)
-        if question:
-            return question
-        raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST,
-            detail=f"Question with provided id {question_id} does not exist",
-        )
+        try:
+            question = QuestionServices.get_question_by_id(question_id)
+            if question:
+                return question
+        except QuestionNotFoundException as e:
+            raise HTTPException(status_code=e.code, detail=e.message)
+        except Exception as e:
+            raise HTTPException(status_code=500, detail=str(e))
 
     @staticmethod
     def get_questions_by_category_id(category_id: str):
@@ -67,5 +68,7 @@ class QuestionController:
             question = QuestionServices.update_question(question_id, text, answer_a, answer_b, answer_c, answer_d,
                                                         correct_answer, category_id)
             return question
+        except QuestionNotFoundException as e:
+            raise HTTPException(status_code=e.code, detail=e.message)
         except Exception as e:
             raise HTTPException(status_code=500, detail=str(e))

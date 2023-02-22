@@ -54,7 +54,7 @@ class CategoryController:
             raise HTTPException(status_code=400, detail=str(e))
 
     @staticmethod
-    def update_category(category_id: str, category: str):
+    def update_category(category_id: str, category: str = None):
         try:
             a_type = CategoryServices.update_category(category_id, category)
             return a_type

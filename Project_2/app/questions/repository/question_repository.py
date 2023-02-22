@@ -21,7 +21,6 @@ class QuestionRepository:
 
     def get_question_by_id(self, question_id: str):
         question = self.db.query(Question).filter(Question.id == question_id).first()
-        print(question)
         if question is None:
             raise QuestionNotFoundException(f"Question with provided ID: {question_id} not found.", 400)
         return question

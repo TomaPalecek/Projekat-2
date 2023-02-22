@@ -66,7 +66,11 @@ class AdminController:
         admin_type_id: str = None,
     ):
         try:
+            if admin_type_id is not None:
+                AdminTypeServices.get_admin_type_by_id(admin_type_id)
             admin = AdminServices.update_admin(admin_id, name, last_name, admin_type_id)
             return admin
+        except AdminTypeNotFoundException as e:
+            raise HTTPException(status_code=e.code, detail=e.message)
         except Exception as e:
             raise HTTPException(status_code=500, detail=str(e))

@@ -42,7 +42,7 @@ class CategoryServices:
             raise e
 
     @staticmethod
-    def update_category(category_id: str, category: str):
+    def update_category(category_id: str, category: str = None):
         try:
             with SessionLocal() as db:
                 category_repository = CategoryRepository(db)

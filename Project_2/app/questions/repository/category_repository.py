@@ -47,7 +47,7 @@ class CategoryRepository:
         except Exception as e:
             raise e
 
-    def update_category(self, category_id: str, category: str):
+    def update_category(self, category_id: str, category: str = None):
         try:
             a_type = self.db.query(Category).filter(Category.id == category_id).first()
             if a_type is None:
