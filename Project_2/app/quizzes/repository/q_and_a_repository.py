@@ -12,7 +12,7 @@ class QandARepository:
         self.db = db
 
     def get_random_question_id(self, quiz_id):
-        subquery = self.db.query(QandA.question_id).filter_by(quiz_id=quiz_id).subquery()
+        subquery = self.db.query(QandA.question_id).filter_by(quiz_id=quiz_id)
 
         question_id = self.db.query(Question.id).filter(~Question.id.in_(subquery)).order_by(func.rand()).limit(1).\
             scalar()

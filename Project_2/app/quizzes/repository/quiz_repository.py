@@ -31,6 +31,8 @@ class QuizRepository:
 
     def get_quiz_by_id(self, quiz_id: str):
         quiz = self.db.query(Quiz).filter(Quiz.id == quiz_id).first()
+        if quiz is None:
+            raise QuizNotFoundException(f"quiz with id {quiz_id} doesn't exist!", 400)
         return quiz
 
     def get_players_challenges(self, player: str):

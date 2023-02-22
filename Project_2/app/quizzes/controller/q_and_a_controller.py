@@ -54,5 +54,7 @@ class QandAController:
         try:
             q_and_a = QandAServices.players_answers(q_and_a_id, player1_answer, player2_answer)
             return q_and_a
+        except QandANotFoundException as e:
+            raise HTTPException(status_code=e.code, detail=e.message)
         except Exception as e:
             raise HTTPException(status_code=500, detail=str(e))

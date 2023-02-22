@@ -25,13 +25,14 @@ class QuizController:
 
     @staticmethod
     def get_quiz_by_id(quiz_id: str):
-        quiz = QuizServices.get_quiz_by_id(quiz_id)
-        if quiz:
-            return quiz
-        raise HTTPException(
-            status_code=400,
-            detail=f"Quiz with provided id {quiz_id} does not exist",
-        )
+        try:
+            quiz = QuizServices.get_quiz_by_id(quiz_id)
+            if quiz:
+                return quiz
+        except QuizNotFoundException as e:
+            raise HTTPException(status_code=e.code, detail=e.message)
+        except Exception as e:
+            raise HTTPException(status_code=500, detail=str(e))
 
     @staticmethod
     def get_players_challenges(player: str):
