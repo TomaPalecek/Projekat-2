@@ -30,9 +30,11 @@ class PlayerController:
     @staticmethod
     def get_player_by_username(username: str):
         try:
-            return PlayerServices.get_player_by_username(username=username)
-        except PlayerNotFoundException as e:
-            raise HTTPException(status_code=e.code, detail=e.message)
+            player = PlayerServices.get_player_by_username(username=username)
+            if player:
+                return player
+            else:
+                raise HTTPException(status_code=400, detail=f"Player with provided username {username} doesn't exist.")
         except Exception as e:
             raise HTTPException(status_code=400, detail=str(e))
 

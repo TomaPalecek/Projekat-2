@@ -29,8 +29,6 @@ class PlayerRepository:
 
     def get_player_by_username(self, username: str):
         player = self.db.query(Player).filter(Player.username == username).first()
-        if player is None:
-            raise PlayerNotFoundException(f"Player with provided ID: {username} not found.", 400)
         return player
 
     def get_all_players(self):

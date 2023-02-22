@@ -1,4 +1,3 @@
-
 from pydantic import NonNegativeInt
 from sqlalchemy import and_
 
@@ -19,9 +18,10 @@ class QuizRepository:
 
     def create_quiz(self, player1, player2):
         try:
+            if player2 == player1:
+                raise SelfChallengeException("Cannot challenge yourself!", 400)
 
             quiz = Quiz(player1, player2)
-
             self.db.add(quiz)
             self.db.commit()
             self.db.refresh(quiz)
@@ -35,6 +35,8 @@ class QuizRepository:
 
     def get_players_challenges(self, player: str):
         quizzes = self.db.query(Quiz).where(and_(Quiz.player2 == player, Quiz.status == "Pending")).all()
+        if quizzes is None:
+            quizzes = ["No challenges"]
 
         return quizzes
 
@@ -67,7 +69,7 @@ class QuizRepository:
                 quiz.status = "Accepted"
             if player_decision is False:
                 quiz.status = "Declined"
-                quiz.winner = quiz.player1
+                quiz.winner = "Not Played"
 
             self.db.add(quiz)
             self.db.commit()
@@ -77,21 +79,21 @@ class QuizRepository:
             raise e
 
     def record_players_times(
-            self, 
+            self,
             quiz_id: str,
-            player1_time: NonNegativeInt = None, 
+            player1_time: NonNegativeInt = None,
             player2_time: NonNegativeInt = None
     ):
         try:
             quiz = self.db.query(Quiz).filter(Quiz.id == quiz_id).first()
-            
+
             if quiz is None:
                 raise QuizNotFoundException(f"Quiz with provided ID: {quiz_id} not found.", 400)
             if player1_time is not None:
                 quiz.player1_time = player1_time
             if player2_time is not None:
                 quiz.player2_time = player2_time
-                
+
             self.db.add(quiz)
             self.db.commit()
             self.db.refresh(quiz)
@@ -125,7 +127,7 @@ class QuizRepository:
                         score += 1
                 quiz.player2_score = score
             else:
-                raise PlayerNotFoundException(f"Player with provided username {player_username} does not exist.", 400)
+                raise PlayerNotInQuizException(f"Player with provided username {player_username} is not in quiz.", 400)
 
             self.db.add(quiz)
             self.db.commit()
@@ -146,7 +148,7 @@ class QuizRepository:
                 raise QuizNotFoundException(f"Quiz with provided ID: {quiz_id} not found.", 400)
 
             if len(q_and_as) != 10:
-                raise QuizHasntTenQuestionsException(f"Quiz with provided id {quiz_id} doesn't have 10 questions.", 400)
+                raise QuizHasntTenQuestionsException(f"Quiz with provided id {quiz_id} doesn't have 10 questions.", 500)
 
             for q in q_and_as:
                 if q.player1_answer == "" or q.player2_answer == "":

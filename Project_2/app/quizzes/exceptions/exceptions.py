@@ -10,6 +10,12 @@ class QandANotFoundException(Exception):
         self.code = code
 
 
+class SelfChallengeException(Exception):
+    def __init__(self, message, code):
+        self.message = message
+        self.code = code
+
+
 class QuizHasTenQuestionsException(Exception):
     def __init__(self, message, code):
         self.message = message
@@ -29,6 +35,12 @@ class NoMoreQuestionsException(Exception):
 
 
 class QuizNotFinishedException(Exception):
+    def __init__(self, message, code):
+        self.message = message
+        self.code = code
+
+
+class PlayerNotInQuizException(Exception):
     def __init__(self, message, code):
         self.message = message
         self.code = code

@@ -4,6 +4,7 @@ from pydantic import NonNegativeInt
 from app.quizzes.exceptions import *
 from app.users.exceptions import *
 from app.quizzes.services import QuizServices, QandAServices
+from app.users.routes import get_player_by_username
 from app.users.services import PlayerServices
 
 
@@ -11,11 +12,13 @@ class QuizController:
     @staticmethod
     def create_quiz(player1, player2):
         try:
-            PlayerServices.get_player_by_id(player1)
-            PlayerServices.get_player_by_id(player2)
+            PlayerServices.get_player_by_username(player1)
+            PlayerServices.get_player_by_username(player2)
             quiz = QuizServices.create_quiz(player1, player2)
             return quiz
         except PlayerNotFoundException as e:
+            raise HTTPException(status_code=e.code, detail=e.message)
+        except SelfChallengeException as e:
             raise HTTPException(status_code=e.code, detail=e.message)
         except Exception as e:
             raise HTTPException(status_code=500, detail=str(e))
@@ -32,8 +35,11 @@ class QuizController:
 
     @staticmethod
     def get_players_challenges(player: str):
-        quiz = QuizServices.get_players_challenges(player)
-        return quiz
+        try:
+            quiz = QuizServices.get_players_challenges(player)
+            return quiz
+        except Exception as e:
+            raise HTTPException(status_code=500, detail=str(e))
 
     @staticmethod
     def get_all_quizzes():
@@ -58,6 +64,8 @@ class QuizController:
         try:
             quiz = QuizServices.answer_challenge_request(quiz_id, player_decision)
             return quiz
+        except QuizNotFoundException as e:
+            raise HTTPException(status_code=e.code, detail=e.message)
         except Exception as e:
             raise HTTPException(status_code=500, detail=str(e))
 
@@ -70,6 +78,8 @@ class QuizController:
         try:
             quiz = QuizServices.record_players_times(quiz_id, player1_time, player2_time)
             return quiz
+        except QuizNotFoundException as e:
+            raise HTTPException(status_code=e.code, detail=e.message)
         except Exception as e:
             raise HTTPException(status_code=500, detail=str(e))
 
@@ -82,6 +92,10 @@ class QuizController:
             q_and_as = QandAServices.get_all_q_and_as_by_quiz_id(quiz_id)
             quiz = QuizServices.calculate_player_score(quiz_id, player_username, q_and_as)
             return quiz
+        except QuizNotFoundException as e:
+            raise HTTPException(status_code=e.code, detail=e.message)
+        except PlayerNotInQuizException as e:
+            raise HTTPException(status_code=e.code, detail=e.message)
         except Exception as e:
             raise HTTPException(status_code=500, detail=str(e))
 
@@ -93,5 +107,11 @@ class QuizController:
             q_and_as = QandAServices.get_all_q_and_as_by_quiz_id(quiz_id)
             quiz = QuizServices.declare_winner(quiz_id, q_and_as)
             return quiz
+        except QuizNotFoundException as e:
+            raise HTTPException(status_code=e.code, detail=e.message)
+        except QuizHasntTenQuestionsException as e:
+            raise HTTPException(status_code=e.code, detail=e.message)
+        except QuizNotFinishedException as e:
+            raise HTTPException(status_code=e.code, detail=e.message)
         except Exception as e:
             raise HTTPException(status_code=500, detail=str(e))
