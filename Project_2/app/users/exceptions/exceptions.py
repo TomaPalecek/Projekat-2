@@ -10,6 +10,12 @@ class AdminTypeNotFoundException(Exception):
         self.code = code
 
 
+class UserNotFoundException(Exception):
+    def __init__(self, message, code):
+        self.message = message
+        self.code = code
+
+
 class AdminTypeExistsException(Exception):
     def __init__(self, message, code):
         self.message = message

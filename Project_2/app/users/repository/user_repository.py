@@ -2,7 +2,7 @@ from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import Session
 
 from app.users.models import User
-
+from app.users.exceptions import *
 
 class UserRepository:
     def __init__(self, db: Session):
@@ -30,6 +30,8 @@ class UserRepository:
 
     def get_user_by_id(self, user_id: str):
         user = self.db.query(User).filter(User.id == user_id).first()
+        if user is None:
+            raise UserNotFoundException(f"User with provided ID: {user_id} not found.", 400)
         return user
 
     def get_all_users(self):
@@ -39,6 +41,8 @@ class UserRepository:
     def delete_user_by_id(self, user_id: str):
         try:
             user = self.db.query(User).filter(User.id == user_id).first()
+            if user is None:
+                raise UserNotFoundException(f"User with provided ID: {user_id} not found.", 400)
             self.db.delete(user)
             self.db.commit()
             return True
@@ -48,6 +52,8 @@ class UserRepository:
     def update_user_is_active(self, user_id: str, is_active: bool):
         try:
             user = self.db.query(User).filter(User.id == user_id).first()
+            if user is None:
+                raise UserNotFoundException(f"User with provided ID: {user_id} not found.", 400)
             user.is_active = is_active
             self.db.add(user)
             self.db.commit()

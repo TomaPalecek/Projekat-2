@@ -1,7 +1,7 @@
 from fastapi import HTTPException, Response
 from sqlalchemy.exc import IntegrityError
 
-from app.users.exceptions import UserInvalidPassword
+from app.users.exceptions import UserInvalidPassword, UserNotFoundException
 from app.users.services import UserServices, signJWT
 
 
@@ -46,14 +46,14 @@ class UserController:
 
     @staticmethod
     def get_user_by_id(user_id: str):
-        user = UserServices.get_user_by_id(user_id)
-        if user:
-            return user
-        else:
-            raise HTTPException(
-                status_code=400,
-                detail=f"user with provided id {user_id} does not exist",
-            )
+        try:
+            user = UserServices.get_user_by_id(user_id)
+            if user:
+                return user
+        except UserNotFoundException as e:
+            raise HTTPException(status_code=e.code, detail=e.message)
+        except Exception as e:
+            raise HTTPException(status_code=500, detail=str(e))
 
     @staticmethod
     def get_all_users():
@@ -65,6 +65,8 @@ class UserController:
         try:
             UserServices.delete_user_by_id(user_id)
             return {"message": f"User with provided id, {user_id}, is deleted."}
+        except UserNotFoundException as e:
+            raise HTTPException(status_code=e.code, detail=e.message)
         except Exception as e:
             raise HTTPException(status_code=400, detail=str(e))
 
@@ -73,5 +75,7 @@ class UserController:
         try:
             user = UserServices.update_user_is_active(user_id, is_active)
             return user
+        except UserNotFoundException as e:
+            raise HTTPException(status_code=e.code, detail=e.message)
         except Exception as e:
             raise HTTPException(status_code=500, detail=str(e))
