@@ -14,8 +14,7 @@ class Question(Base):
     answer_b = Column(String(100))
     answer_c = Column(String(100))
     answer_d = Column(String(100))
-    # mozda veci broj karaktera da dopustim pa posle da hvatam gresku ako upisu vise
-    correct_answer = Column(String(1))
+    correct_answer = Column(String(100))
 
     category_id = Column(String(50), ForeignKey("categories.id"), nullable=False)
 
