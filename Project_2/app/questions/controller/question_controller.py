@@ -6,7 +6,9 @@ from app.questions.services import QuestionServices, CategoryServices
 
 class QuestionController:
     @staticmethod
-    def create_question(text, answer_a, answer_b, answer_c, answer_d, correct_answer, category_id):
+    def create_question(text: str, answer_a: str, answer_b: str, answer_c: str, answer_d: str, correct_answer: str,
+                        category_id: str):
+
         try:
             CategoryServices.get_category_by_id(category_id)
             question = QuestionServices.create_question(text, answer_a, answer_b, answer_c, answer_d, correct_answer,
