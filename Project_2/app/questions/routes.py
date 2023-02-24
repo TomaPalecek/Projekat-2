@@ -28,8 +28,8 @@ def delete_category_by_id(category_id: str):
 
 
 @category_router.put("/update", response_model=CategorySchema, dependencies=[Depends(JWTBearer("super_user"))])
-def update_category(category_id, category: str = None):
-    return CategoryController.update_category(category_id, category)
+def update_category(category: CategorySchemaUpdate):
+    return CategoryController.update_category(category.id, category.category)
 
 
 question_router = APIRouter(tags=["Question"], prefix="/api/questions")

@@ -14,3 +14,11 @@ class CategorySchemaIn(BaseModel):
 
     class Config:
         orm_mode = True
+
+
+class CategorySchemaUpdate(BaseModel):
+    id: str
+    category: str
+
+    class Config:
+        orm_mode = True
