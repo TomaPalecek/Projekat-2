@@ -25,3 +25,16 @@ class PlayerSchemaIn(BaseModel):
 
     class Config:
         orm_mode = True
+
+
+class PlayerSchemaUpdate(BaseModel):
+
+    player_id: str
+    username: str
+    played_quizzes: int
+    questions_taken: int
+    correct_answers: int
+    incorrect_answers: int
+
+    class Config:
+        orm_mode = True

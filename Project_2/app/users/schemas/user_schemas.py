@@ -18,3 +18,11 @@ class UserSchemaIn(BaseModel):
 
     class Config:
         orm_mode = True
+
+
+class UserSchemaUpdate(BaseModel):
+    id: str
+    is_active: bool
+
+    class Config:
+        orm_mode = True

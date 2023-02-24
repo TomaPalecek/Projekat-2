@@ -11,7 +11,7 @@ def create_user(user: UserSchemaIn):
     return UserController.create_user(user.email, user.password)
 
 
-@user_router.post("/add-new-super-user", response_model=UserSchema, dependencies=[Depends(JWTBearer("super_user"))])
+@user_router.post("/add-new-super-user", response_model=UserSchema)
 def create_super_user(user: UserSchemaIn):
     return UserController.create_super_user(user.email, user.password)
 
@@ -37,8 +37,8 @@ def delete_user_by_id(user_id: str):
 
 
 @user_router.put("/update/is_active", response_model=UserSchema)
-def update_user(user_id: str, is_active: bool):
-    return UserController.update_user_is_active(user_id, is_active)
+def update_user(user: UserSchemaUpdate):
+    return UserController.update_user_is_active(user.id, user.is_active)
 
 
 player_router = APIRouter(tags=["Player"], prefix="/api/players")
@@ -71,16 +71,9 @@ def delete_player_by_id(player_id: str):
 
 
 @player_router.put("/update-player-by-id", response_model=PlayerSchema, dependencies=[Depends(JWTBearer("super_user"))])
-def update_player(
-        player_id: str,
-        username: str = None,
-        played_quizzes: str = None,
-        questions_taken: str = None,
-        correct_answers: str = None,
-        incorrect_answers: str = None
-):
-    return PlayerController.update_player(player_id, username, played_quizzes, questions_taken,
-                                          correct_answers, incorrect_answers)
+def update_player(player: PlayerSchemaUpdate):
+    return PlayerController.update_player(player.player_id, player.username, player.played_quizzes, player.questions_taken,
+                                          player.correct_answers, player.incorrect_answers)
 
 
 admin_router = APIRouter(tags=["Admin"], prefix="/api/admins")

@@ -57,10 +57,10 @@ class PlayerController:
     def update_player(
         player_id: str,
         username: str = None,
-        played_quizzes: str = None,
-        questions_taken: str = None,
-        correct_answers: str = None,
-        incorrect_answers: str = None
+        played_quizzes: int = None,
+        questions_taken: int = None,
+        correct_answers: int = None,
+        incorrect_answers: int = None
     ):
         try:
             player = PlayerServices.update_player(player_id, username, played_quizzes, questions_taken,
