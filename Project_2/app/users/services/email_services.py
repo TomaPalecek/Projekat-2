@@ -50,7 +50,7 @@ class EmailServices:
 
     @staticmethod
     def send_email_lose(email: EmailStr):
-        html = """<p>Congratulations, you won!</p> """
+        html = """<p>Congratulations, you lost!</p> """
 
         message = MessageSchema(
             subject="Your quiz results are in!!.",
