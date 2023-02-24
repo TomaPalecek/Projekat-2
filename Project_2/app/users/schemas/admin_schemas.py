@@ -20,3 +20,13 @@ class AdminSchemaIn(BaseModel):
 
     class Config:
         orm_mode = True
+
+
+class AdminSchemaUpdate(BaseModel):
+    id: str
+    name: str
+    last_name: str
+    admin_type_id: str
+
+    class Config:
+        orm_mode = True

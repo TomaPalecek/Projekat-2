@@ -105,13 +105,8 @@ def delete_admin_by_id(admin_id: str):
 
 
 @admin_router.put("/update-admin-by-id", response_model=AdminSchema, dependencies=[Depends(JWTBearer("super_user"))])
-def update_admin(
-    admin_id: str,
-    name: str = None,
-    last_name: str = None,
-    admin_type_id: str = None,
-):
-    return AdminController.update_admin(admin_id, name, last_name, admin_type_id)
+def update_admin(admin: AdminSchemaUpdate):
+    return AdminController.update_admin(admin.id, admin.name, admin.last_name, admin.admin_type_id)
 
 
 admin_type_router = APIRouter(tags=["Admin Type"], prefix="/api/admin-type")
@@ -140,5 +135,6 @@ def delete_admin_type_by_id(admin_type_id: str):
 
 
 @admin_type_router.put("/update", response_model=AdminTypeSchema, dependencies=[Depends(JWTBearer("super_user"))])
-def update_admin_type(admin_type_id, admin_type: str = None, role: str = None, seniority: str = None):
-    return AdminTypeController.update_admin_type(admin_type_id, admin_type, role, seniority)
+def update_admin_type(admin_type: AdminTypeSchemaUpdate):
+    return AdminTypeController.update_admin_type(admin_type.id, admin_type.admin_type, admin_type.role,
+                                                 admin_type.seniority)
