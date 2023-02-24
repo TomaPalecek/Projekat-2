@@ -9,7 +9,8 @@ from app.quizzes.models import Quiz
 
 from app.questions.services import QuestionServices
 from app.users.exceptions import *
-from app.users.services import PlayerServices
+from app.users.services import PlayerServices, UserServices
+from app.users.services.email_services import EmailServices
 
 
 class QuizRepository:
@@ -161,6 +162,8 @@ class QuizRepository:
 
             player_updater1 = PlayerServices.get_player_by_username(quiz.player1)
             player_updater2 = PlayerServices.get_player_by_username(quiz.player2)
+            player1_user = UserServices.get_user_by_id(player_updater1.user_id)
+            player2_user = UserServices.get_user_by_id(player_updater2.user_id)
 
             player_updater1.played_quizzes += 1
             player_updater2.played_quizzes += 1
@@ -182,20 +185,31 @@ class QuizRepository:
 
             if quiz.player1_score > quiz.player2_score:
                 quiz.winner = quiz.player1
+                print("HEREEE")
+                EmailServices.send_email_win(player1_user.email)
+                EmailServices.send_email_lose(player2_user.email)
 
             elif quiz.player1_score < quiz.player2_score:
                 quiz.winner = quiz.player2
+                EmailServices.send_email_win(player2_user.email)
+                EmailServices.send_email_lose(player1_user.email)
 
             elif quiz.player1_score == quiz.player2_score:
 
                 if quiz.player1_time > quiz.player2_time:
                     quiz.winner = quiz.player1
+                    EmailServices.send_email_win(player1_user.email)
+                    EmailServices.send_email_lose(player2_user.email)
 
                 elif quiz.player1_time < quiz.player2_time:
                     quiz.winner = quiz.player2
+                    EmailServices.send_email_win(player2_user.email)
+                    EmailServices.send_email_lose(player1_user.email)
 
                 else:
                     quiz.winner = "Draw"
+                    EmailServices.send_email_draw(player2_user.email)
+                    EmailServices.send_email_draw(player1_user.email)
 
             self.db.add(quiz)
             self.db.commit()

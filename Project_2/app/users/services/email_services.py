@@ -31,3 +31,50 @@ class EmailServices:
         fm = FastMail(EmailServices.conf)
         asyncio.run(fm.send_message(message))
         return
+
+    @staticmethod
+    def send_email_win(email: EmailStr):
+        html = """<p>Congratulations, you won!</p> """
+
+        message = MessageSchema(
+            subject="Your quiz results are in!!.",
+            recipients=[email],
+            body=html,
+            subtype=MessageType.html,
+        )
+
+        fm = FastMail(EmailServices.conf)
+        asyncio.run(fm.send_message(message))
+        print("HEREEE")
+        return
+
+    @staticmethod
+    def send_email_lose(email: EmailStr):
+        html = """<p>Congratulations, you won!</p> """
+
+        message = MessageSchema(
+            subject="Your quiz results are in!!.",
+            recipients=[email],
+            body=html,
+            subtype=MessageType.html,
+        )
+
+        fm = FastMail(EmailServices.conf)
+        asyncio.run(fm.send_message(message))
+        print("HEREEE")
+        return
+
+    @staticmethod
+    def send_email_draw(email: EmailStr):
+        html = """<p>Good effort, it was a draw!</p> """
+
+        message = MessageSchema(
+            subject="Your quiz results are in!!.",
+            recipients=[email],
+            body=html,
+            subtype=MessageType.html,
+        )
+
+        fm = FastMail(EmailServices.conf)
+        asyncio.run(fm.send_message(message))
+        return
