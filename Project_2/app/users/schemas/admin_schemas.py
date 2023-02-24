@@ -6,6 +6,7 @@ class AdminSchema(BaseModel):
     name: str
     last_name: str
     admin_type_id: str
+    user_id: str
 
     class Config:
         orm_mode = True
@@ -14,6 +15,7 @@ class AdminSchema(BaseModel):
 class AdminSchemaIn(BaseModel):
     name: str
     last_name: str
+    user_id: str
     admin_type_id: str
 
     class Config:

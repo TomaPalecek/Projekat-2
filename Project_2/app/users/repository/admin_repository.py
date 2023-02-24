@@ -9,9 +9,9 @@ class AdminRepository:
     def __init__(self, db: Session):
         self.db = db
 
-    def create_admin(self, name, last_name, admin_type_id):
+    def create_admin(self, name, last_name, admin_type_id, user_id):
         try:
-            admin = Admin(name, last_name, admin_type_id)
+            admin = Admin(name, last_name, admin_type_id, user_id)
             self.db.add(admin)
             self.db.commit()
             self.db.refresh(admin)

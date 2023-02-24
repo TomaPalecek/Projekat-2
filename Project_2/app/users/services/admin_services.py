@@ -4,11 +4,11 @@ from app.users.repository.admin_repository import AdminRepository
 
 class AdminServices:
     @staticmethod
-    def create_admin(name, last_name, admin_type_id):
+    def create_admin(name: str, last_name: str, admin_type_id: str, user_id: str):
         try:
             with SessionLocal() as db:
                 admin_repository = AdminRepository(db)
-                return admin_repository.create_admin(name, last_name, admin_type_id)
+                return admin_repository.create_admin(name, last_name, admin_type_id, user_id)
         except Exception as e:
             raise e
 

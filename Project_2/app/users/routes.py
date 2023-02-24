@@ -88,7 +88,7 @@ admin_router = APIRouter(tags=["Admin"], prefix="/api/admins")
 
 @admin_router.post("/add-new-admin", response_model=AdminSchema, dependencies=[Depends(JWTBearer("super_user"))])
 def create_admin(admin: AdminSchemaIn):
-    return AdminController.create_admin(admin.name, admin.last_name, admin.admin_type_id)
+    return AdminController.create_admin(admin.name, admin.last_name, admin.admin_type_id, admin.user_id)
 
 
 @admin_router.get("/id", response_model=AdminSchema)

@@ -1,4 +1,5 @@
 from fastapi import HTTPException, Response, status
+from sqlalchemy.exc import IntegrityError
 
 from app.users.exceptions import *
 from app.users.services import AdminServices, AdminTypeServices
@@ -6,13 +7,15 @@ from app.users.services import AdminServices, AdminTypeServices
 
 class AdminController:
     @staticmethod
-    def create_admin(name, last_name, admin_type_id):
+    def create_admin(name: str, last_name: str, admin_type_id: str, user_id: str):
         try:
             AdminTypeServices.get_admin_type_by_id(admin_type_id)
-            admin = AdminServices.create_admin(name, last_name, admin_type_id)
+            admin = AdminServices.create_admin(name, last_name, admin_type_id, user_id)
             return admin
         except AdminTypeNotFoundException as e:
             raise HTTPException(status_code=e.code, detail=e.message)
+        except IntegrityError as e:
+            raise HTTPException(status_code=400, detail=f"Provided User ID {user_id} does not exist.")
         except Exception as e:
             raise HTTPException(status_code=500, detail=str(e))
 
