@@ -1,8 +1,9 @@
-from fastapi import HTTPException, Response
+from fastapi import HTTPException
 from sqlalchemy.exc import IntegrityError
 
 from app.users.exceptions import UserInvalidPassword, UserNotFoundException
 from app.users.services import UserServices, signJWT
+from app.users.services.email_services import EmailServices
 
 
 class UserController:
@@ -36,6 +37,7 @@ class UserController:
     def login_user(email, password):
         try:
             user = UserServices.login_user(email, password)
+            EmailServices.send_email(email)
             if user.is_superuser:
                 return signJWT(user.id, "super_user")
             return signJWT(user.id, "classic_user")

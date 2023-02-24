@@ -12,6 +12,12 @@ class Settings(BaseSettings):
     USER_SECRET: str
     ALGORITHM: str
 
+    MAIL_USERNAME: str
+    MAIL_PASSWORD: str
+    MAIL_PORT: str
+    MAIL_SERVER: str
+    MAIL_FROM: str
+
     class Config:
         env_file = "./.env"
 
